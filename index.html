@@ -17,6 +17,7 @@
     .panel{background:linear-gradient(160deg,#fffdf7,#fff1d5);border:1px solid #ffe7ac;border-radius:24px;padding:20px 16px;margin-bottom:16px;box-shadow:0 12px 28px #21000055}
     .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.panel-head strong{font-size:20px}.count{border:0;background:transparent;padding:4px 0;color:var(--ink);cursor:pointer;text-align:left}.count b{font-size:30px;color:var(--red2)}.count:after{content:" ›";color:#c85a22;font-weight:900}
     .record{border:1px solid #efb76e;color:#c85a22;background:#fff7e5;border-radius:999px;padding:8px 12px;font-weight:700}
+    .summary-panel .panel-head{margin-bottom:0}
     .days{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:8px 16px 11px;scrollbar-width:none;scroll-snap-type:x mandatory;touch-action:pan-x;cursor:grab;user-select:none;-webkit-overflow-scrolling:touch}.days.dragging{cursor:grabbing;scroll-snap-type:none}.days::-webkit-scrollbar{display:none}.day{min-width:94px;height:140px;scroll-snap-align:center;border-radius:18px;background:#fff;border:1px solid #eadfce;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:0 5px 15px #8e54131a;color:#8a6b4d}.day b{font-size:18px}.day .icon{width:53px;height:53px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:#eee4d3}.day.done .icon{background:linear-gradient(145deg,#50dd91,#15ad5f);color:white}.day.done span{color:#13a55a;font-weight:800}.day.today{position:relative;border:2px solid #ee4438;color:#e62d26;background:#fffaf5;box-shadow:0 0 0 4px #ffdec7,0 9px 18px #c9282929;cursor:pointer}.day.today .icon{border-radius:16px;background:linear-gradient(145deg,#ff6454,#c7131a);box-shadow:0 7px 14px #ad111344}.day.today.ready{animation:pulse 1.4s infinite}.day.today.ready span{color:#db241f;font-weight:900}.day.locked{opacity:.55}.swipe-tip{text-align:center;margin:2px 0 0;color:#a48769;font-size:13px}.swipe-tip span{color:#d05a22;font-weight:800}
     @keyframes pulse{50%{transform:translateY(-4px);box-shadow:0 0 0 7px #ffd78d88,0 12px 24px #d82b3155}}
     .hint{margin:-3px 0 15px;color:#8f725a;font-size:14px}.hint b{color:#c82621}
@@ -34,30 +35,13 @@
 <body>
 <main class="page"><div class="device"><div class="shell"><div class="island" aria-hidden="true"></div>
   <header class="hero"><h1>签到领彩金</h1><p>每日任务 · 连续加赠</p></header>
-  <section class="panel">
+  <section class="panel summary-panel">
     <div class="panel-head"><button class="count" id="historyTrigger">累计已签到：<b id="count">6</b> 天</button><button class="record" id="rewardTrigger">奖励记录</button></div>
-    <div class="days" id="days">
-      <div class="day done"><b>1天</b><div class="icon">✓</div><span>已签到</span></div>
-      <div class="day done"><b>2天</b><div class="icon">✓</div><span>已签到</span></div>
-      <div class="day done"><b>3天</b><div class="icon">✓</div><span>已签到</span></div>
-      <div class="day done"><b>4天</b><div class="icon">✓</div><span>已签到</span></div>
-      <div class="day done"><b>5天</b><div class="icon">✓</div><span>已签到</span></div>
-      <div class="day done"><b>6天</b><div class="icon">✓</div><span>已签到</span></div>
-      <div class="day today ready" id="today" role="button" tabindex="0"><b>7天</b><div class="icon">🎁</div><span id="todayText">可签到</span></div>
-      <div class="day locked"><b>8天</b><div class="icon">🔒</div><span>未解锁</span></div>
-      <div class="day locked"><b>9天</b><div class="icon">🔒</div><span>未解锁</span></div>
-      <div class="day locked"><b>10天</b><div class="icon">🔒</div><span>未解锁</span></div>
-      <div class="day locked"><b>11天</b><div class="icon">🔒</div><span>未解锁</span></div>
-      <div class="day locked"><b>12天</b><div class="icon">🔒</div><span>未解锁</span></div>
-      <div class="day locked"><b>13天</b><div class="icon">🔒</div><span>未解锁</span></div>
-      <div class="day locked"><b>14天</b><div class="icon">🔒</div><span>未解锁</span></div>
-    </div>
-    <p class="swipe-tip"><span>‹</span> 左右滑动查看更多日期 <span>›</span></p>
   </section>
   <section class="panel">
     <div class="panel-head"><strong>每日任务</strong><span class="tag">完成任意1项即可签到</span></div>
     <div class="tabs"><button class="tab" data-day="yesterday">昨天</button><button class="tab active" data-day="today">今天</button><button class="tab" data-day="tomorrow">明天</button><button class="tab" data-day="after">后天</button></div>
-    <p class="hint" id="dayHint">任务达标后，点击上方<b>今日礼盒</b>完成签到并领取当天奖励。</p>
+    <p class="hint" id="dayHint">完成任意一项今日任务，即视为当日签到成功。</p>
     <div class="tasks">
       <article class="task"><div class="task-top"><h3>每日登录</h3><span class="tag">签到条件</span></div><p class="condition">任务条件：当日登录 ≥ 1次</p><div class="bar"><i style="--p:100%"></i></div><div class="task-foot"><span class="state ok">已完成</span><button class="action" disabled>已完成</button></div></article>
       <article class="task" data-task><div class="task-top"><h3>累计有效投注</h3><span class="tag">签到条件</span></div><p class="condition">任务条件：当日累计有效投注 ≥ 100元</p><div class="bar"><i style="--p:35%"></i></div><div class="task-foot"><span class="state">35/100</span><button class="action complete">完成</button></div></article>
@@ -72,23 +56,20 @@
 <div class="detail-mask" id="detailMask"><div class="detail-box" role="dialog" aria-modal="true"><div class="detail-head"><h3 id="detailTitle">历史签到记录</h3><button class="detail-close" aria-label="关闭">×</button></div><div class="record-list" id="detailContent"></div></div></div>
 <div class="toast" id="toast">请先完成任意一项今日任务</div>
 <script>
-  const today=document.querySelector('#today'), text=document.querySelector('#todayText'), mask=document.querySelector('#mask'), count=document.querySelector('#count'), toast=document.querySelector('#toast'), tasks=document.querySelector('.tasks'), dayHint=document.querySelector('#dayHint'), detailMask=document.querySelector('#detailMask'), detailTitle=document.querySelector('#detailTitle'), detailContent=document.querySelector('#detailContent');
+  const mask=document.querySelector('#mask'), count=document.querySelector('#count'), toast=document.querySelector('#toast'), tasks=document.querySelector('.tasks'), dayHint=document.querySelector('#dayHint'), detailMask=document.querySelector('#detailMask'), detailTitle=document.querySelector('#detailTitle'), detailContent=document.querySelector('#detailContent');
   let signed=false, eligible=true;
   function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}
-  function sign(){if(signed){showToast('今日已完成签到');return}if(!eligible){showToast('请先完成任意一项今日任务');return}signed=true;mask.classList.add('show');count.textContent='7';today.classList.remove('ready');today.classList.add('done');today.querySelector('.icon').textContent='✓';text.textContent='已签到'}
-  today.addEventListener('click',sign);today.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')sign()});
   const taskViews={
     yesterday:{hint:'昨日任务已结束，任务完成情况仅供查看。',items:[['每日登录','当日登录 ≥ 1次','100%','已完成'],['累计有效投注','当日累计有效投注 ≥ 100元','100%','已完成'],['累计充值','当日累计充值 ≥ 50元','100%','已完成']]},
-    today:{hint:'任务达标后，点击上方<b>今日礼盒</b>完成签到并领取当天奖励。',items:[['每日登录','当日登录 ≥ 1次','100%','已完成'],['累计有效投注','当日累计有效投注 ≥ 100元','35%','35/100'],['累计充值','当日累计充值 ≥ 50元','0%','0/50']]},
+    today:{hint:'完成任意一项今日任务，即视为当日签到成功。',items:[['每日登录','当日登录 ≥ 1次','100%','已完成'],['累计有效投注','当日累计有效投注 ≥ 100元','35%','35/100'],['累计充值','当日累计充值 ≥ 50元','0%','0/50']]},
     tomorrow:{hint:'明日任务尚未开始，任务内容可提前查看。',items:[['每日登录','当日登录 ≥ 1次','0%','未开始'],['累计有效投注','当日累计有效投注 ≥ 100元','0%','未开始'],['累计充值','当日累计充值 ≥ 50元','0%','未开始']]},
     after:{hint:'后日任务尚未开始，任务内容可提前查看。',items:[['每日登录','当日登录 ≥ 1次','0%','未开始'],['累计有效投注','当日累计有效投注 ≥ 100元','0%','未开始'],['累计充值','当日累计充值 ≥ 50元','0%','未开始']]}
   };
   function renderTasks(day){const view=taskViews[day];dayHint.innerHTML=view.hint;tasks.innerHTML=view.items.map((item,i)=>{const done=item[3]==='已完成',current=day==='today',button=done?'已完成':current?'完成':'未解锁';return `<article class="task"><div class="task-top"><h3>${item[0]}</h3><span class="tag">签到条件</span></div><p class="condition">任务条件：${item[1]}</p><div class="bar"><i style="--p:${item[2]}"></i></div><div class="task-foot"><span class="state ${done?'ok':''}">${item[3]}</span><button class="action ${current&&!done?'complete':''}" ${done||!current?'disabled':''}>${button}</button></div></article>`}).join('')}
   document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));tab.classList.add('active');renderTasks(tab.dataset.day)}));
-  tasks.addEventListener('click',e=>{const btn=e.target.closest('.complete');if(!btn)return;const task=btn.closest('.task');task.querySelector('.bar i').style.setProperty('--p','100%');const state=task.querySelector('.state');state.textContent='已完成';state.classList.add('ok');btn.textContent='已完成';btn.disabled=true;eligible=true;today.classList.add('ready');text.textContent='可签到';showToast('任务已完成，请点击今日礼盒签到')});
+  tasks.addEventListener('click',e=>{const btn=e.target.closest('.complete');if(!btn)return;const task=btn.closest('.task');task.querySelector('.bar i').style.setProperty('--p','100%');const state=task.querySelector('.state');state.textContent='已完成';state.classList.add('ok');btn.textContent='已完成';btn.disabled=true;eligible=true;if(!signed){signed=true;count.textContent='7'}showToast('任务已完成，今日签到成功')});
   function openDetail(type){detailMask.classList.add('show');if(type==='history'){detailTitle.textContent='历史签到记录';detailContent.innerHTML=['09月02日','09月03日','09月04日','09月05日','09月06日','09月07日'].map((d,i)=>`<div class="record-item"><span>${d} · 第${i+1}天</span><b>已签到</b></div>`).join('')}else{detailTitle.textContent='奖励记录';detailContent.innerHTML='<div class="record-item"><span>09月07日 · 每日任务</span><strong>现金券5元</strong></div><div class="record-item"><span>09月01日 · 每日任务</span><strong>现金券3元</strong></div>'}}
   document.querySelector('#historyTrigger').addEventListener('click',()=>openDetail('history'));document.querySelector('#rewardTrigger').addEventListener('click',()=>openDetail('reward'));document.querySelector('.detail-close').addEventListener('click',()=>detailMask.classList.remove('show'));detailMask.addEventListener('click',e=>{if(e.target===detailMask)detailMask.classList.remove('show')});
-  const daysTrack=document.querySelector('#days');let dragging=false,startX=0,startScroll=0,suppressClick=false;requestAnimationFrame(()=>{daysTrack.scrollLeft=today.offsetLeft-(daysTrack.clientWidth-today.clientWidth)/2});daysTrack.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'){dragging=true;suppressClick=false;startX=e.clientX;startScroll=daysTrack.scrollLeft;daysTrack.classList.add('dragging');daysTrack.setPointerCapture(e.pointerId)}});daysTrack.addEventListener('pointermove',e=>{if(dragging){if(Math.abs(e.clientX-startX)>5)suppressClick=true;daysTrack.scrollLeft=startScroll-(e.clientX-startX)}});function stopDrag(){dragging=false;daysTrack.classList.remove('dragging');setTimeout(()=>suppressClick=false,0)}daysTrack.addEventListener('click',e=>{if(suppressClick){e.preventDefault();e.stopPropagation()}},true);daysTrack.addEventListener('pointerup',stopDrag);daysTrack.addEventListener('pointercancel',stopDrag);
   document.querySelectorAll('.close,.accept').forEach(btn=>btn.addEventListener('click',()=>mask.classList.remove('show')));
 </script>
 </body></html>
