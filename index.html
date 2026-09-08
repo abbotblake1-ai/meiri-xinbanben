@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>每日签到交互原型</title>
+  <style>
+    :root{--red:#b91518;--red2:#e52b24;--gold:#ffc95f;--cream:#fff8e9;--ink:#3e271d;--green:#20b86a;--muted:#aa9a89}
+    *{box-sizing:border-box} body{margin:0;background:#2d0a0b;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}
+    button{font:inherit}.page{min-height:100vh;background:radial-gradient(circle at 50% 0,#8d1518 0,#4d0d10 44%,#250709 100%);padding:22px 12px 64px;overflow:hidden}
+    .shell{width:min(100%,460px);margin:auto}.hero{height:152px;position:relative;text-align:center;color:#ffe5a2;padding-top:24px}.hero:after{content:"";position:absolute;inset:5px 35px 0;background:radial-gradient(circle,#efb84344,transparent 67%);filter:blur(8px)}
+    .hero h1{position:relative;z-index:1;margin:0;font-size:31px;letter-spacing:3px;color:#ffd97d;text-shadow:0 3px 0 #771116,0 0 18px #ffb62c}.hero p{position:relative;z-index:1;margin:8px 0;font-weight:700;letter-spacing:2px}
+    .panel{background:linear-gradient(160deg,#fffdf7,#fff1d5);border:1px solid #ffe7ac;border-radius:24px;padding:20px 16px;margin-bottom:16px;box-shadow:0 12px 28px #21000055}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.panel-head strong{font-size:20px}.count b{font-size:30px;color:var(--red2)}
+    .record{border:1px solid #efb76e;color:#c85a22;background:#fff7e5;border-radius:999px;padding:8px 12px;font-weight:700}
+    .days{display:flex;gap:10px;overflow:auto;padding:8px 3px 11px;scrollbar-width:none}.days::-webkit-scrollbar{display:none}.day{min-width:94px;height:140px;border-radius:18px;background:#fff;border:1px solid #eadfce;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:0 5px 15px #8e54131a;color:#8a6b4d}.day b{font-size:18px}.day .icon{width:53px;height:53px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:#eee4d3}.day.done .icon{background:linear-gradient(145deg,#50dd91,#15ad5f);color:white}.day.done span{color:#13a55a;font-weight:800}.day.today{position:relative;border:2px solid #ee4438;color:#e62d26;background:#fffaf5;box-shadow:0 0 0 4px #ffdec7,0 9px 18px #c9282929;cursor:pointer}.day.today .icon{border-radius:16px;background:linear-gradient(145deg,#ff6454,#c7131a);box-shadow:0 7px 14px #ad111344}.day.today.ready{animation:pulse 1.4s infinite}.day.today.ready span{color:#db241f;font-weight:900}.day.locked{opacity:.55}
+    @keyframes pulse{50%{transform:translateY(-4px);box-shadow:0 0 0 7px #ffd78d88,0 12px 24px #d82b3155}}
+    .hint{margin:-3px 0 15px;color:#8f725a;font-size:14px}.hint b{color:#c82621}
+    .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}.tab{border:1px solid #e7d5bf;background:#fff;border-radius:999px;padding:9px 4px;color:#8b6f55;font-weight:800}.tab.active{background:linear-gradient(90deg,#ff7a23,#ff4c21);color:white;border-color:transparent}
+    .tasks{display:grid;gap:12px}.task{background:white;border:1px solid #eadbc7;border-radius:16px;padding:15px}.task-top,.task-foot{display:flex;justify-content:space-between;align-items:center;gap:12px}.task h3{margin:0;font-size:17px}.tag{font-size:12px;color:#d85c25;background:#fff0df;border-radius:999px;padding:5px 8px}.condition{margin:9px 0;color:#a38d7d;font-size:14px}.bar{height:7px;border-radius:99px;background:#eee7dd;overflow:hidden;margin:10px 0 12px}.bar i{display:block;height:100%;width:var(--p);background:linear-gradient(90deg,#ff9d2d,#f34a22);border-radius:inherit}.state{font-weight:800;color:#9d8b7b}.state.ok{color:var(--green)}.action{border:0;border-radius:999px;padding:9px 17px;background:linear-gradient(90deg,#ff6a24,#f43120);color:white;font-weight:800}.action[disabled]{background:#e8e2d9;color:#9f968c}
+    .stage-row{display:flex;gap:10px;overflow:auto}.stage{min-width:105px;text-align:center;padding:13px 8px;border-radius:15px;background:#fff;border:1px solid #eadcc7}.stage.hit{border-color:#e52b24;background:#fff5eb}.stage b{display:block;margin-bottom:8px}.stage span{font-size:13px;color:#a28367}
+    .demo{display:flex;justify-content:center;margin-top:18px}.reset{border:1px solid #ffffff77;background:#ffffff12;color:#fff1d4;border-radius:999px;padding:9px 18px}
+    .mask{position:fixed;inset:0;background:#140303bd;display:none;align-items:center;justify-content:center;padding:28px;z-index:10}.mask.show{display:flex}.modal{width:min(100%,390px);position:relative;background:linear-gradient(#9f0911 0 47%,#fff4d8 47%);border:3px solid #ffd36a;border-radius:32px;box-shadow:0 0 55px #ffb52eaa;text-align:center;padding:96px 24px 24px;animation:pop .38s cubic-bezier(.2,1.35,.4,1)}
+    @keyframes pop{from{opacity:0;transform:scale(.72) translateY(40px)}}.medal{position:absolute;left:50%;top:-72px;transform:translateX(-50%);width:144px;height:144px;border-radius:50%;display:grid;place-items:center;font-size:68px;background:radial-gradient(circle at 35% 28%,#fff3ac,#f8bd34 43%,#bd650b 70%);border:9px solid #ffe69a;box-shadow:0 0 0 7px #a80d13,0 0 35px #ffd449}.close{position:absolute;right:-10px;top:-18px;width:43px;height:43px;border-radius:50%;border:2px solid #ffd975;background:#8d0b10;color:white;font-size:25px}
+    .modal h2{margin:0 0 34px;color:#ffe48b;font-size:38px;text-shadow:0 3px 0 #5c0307}.reward-title{font-size:16px;color:#8b684b;margin-bottom:11px}.rewards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.reward{background:white;border:1px solid #f1cf88;border-radius:15px;padding:12px 8px}.reward small{display:block;color:#a48769;margin-bottom:5px}.reward strong{color:#c3191f;font-size:18px}.accept{width:100%;border:2px solid #ffd066;background:linear-gradient(#f54836,#b70d14);color:#fff6c8;border-radius:999px;padding:14px;margin-top:18px;font-weight:900;font-size:18px;box-shadow:0 7px 14px #9e111c44}.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:#1c1714e8;color:white;padding:11px 17px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:20;white-space:nowrap}.toast.show{opacity:1}
+    @media (max-width:390px){.page{padding-inline:8px}.panel{padding-inline:12px}.day{min-width:86px}.modal h2{font-size:33px}}
+  </style>
+</head>
+<body>
+<main class="page"><div class="shell">
+  <header class="hero"><h1>签到领彩金</h1><p>每日任务 · 连续加赠</p></header>
+  <section class="panel">
+    <div class="panel-head"><div class="count">累计已签到：<b id="count">6</b> 天</div><button class="record">奖励记录</button></div>
+    <div class="days" id="days">
+      <div class="day done"><b>5天</b><div class="icon">✓</div><span>已签到</span></div>
+      <div class="day done"><b>6天</b><div class="icon">✓</div><span>已签到</span></div>
+      <div class="day today ready" id="today" role="button" tabindex="0"><b>7天</b><div class="icon">🎁</div><span id="todayText">可签到</span></div>
+      <div class="day locked"><b>8天</b><div class="icon">🔒</div><span>未解锁</span></div>
+      <div class="day locked"><b>9天</b><div class="icon">🔒</div><span>未解锁</span></div>
+    </div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><strong>每日任务</strong><span class="tag">完成任意1项即可签到</span></div>
+    <div class="tabs"><button class="tab">昨天</button><button class="tab active">今天</button><button class="tab">明天</button><button class="tab">后天</button></div>
+    <p class="hint">任务达标后，点击上方<b>今日礼盒</b>完成签到并领取当天奖励。</p>
+    <div class="tasks">
+      <article class="task"><div class="task-top"><h3>每日登录</h3><span class="tag">签到条件</span></div><p class="condition">任务条件：当日登录 ≥ 1次</p><div class="bar"><i style="--p:100%"></i></div><div class="task-foot"><span class="state ok">已完成</span><button class="action" disabled>已完成</button></div></article>
+      <article class="task" data-task><div class="task-top"><h3>累计有效投注</h3><span class="tag">签到条件</span></div><p class="condition">任务条件：当日累计有效投注 ≥ 100元</p><div class="bar"><i style="--p:35%"></i></div><div class="task-foot"><span class="state">35/100</span><button class="action complete">模拟完成</button></div></article>
+      <article class="task" data-task><div class="task-top"><h3>累计充值</h3><span class="tag">签到条件</span></div><p class="condition">任务条件：当日累计充值 ≥ 50元</p><div class="bar"><i style="--p:0%"></i></div><div class="task-foot"><span class="state">0/50</span><button class="action complete">模拟完成</button></div></article>
+    </div>
+  </section>
+  <section class="panel"><div class="panel-head"><strong>连续签到加赠</strong><span class="tag">达到节点额外发放</span></div><div class="stage-row"><div class="stage hit"><b>连续7天</b><span>存送券8元</span></div><div class="stage"><b>连续14天</b><span>现金券18元</span></div><div class="stage"><b>连续20天</b><span>流水券28元</span></div></div></section>
+  <div class="demo"><button class="reset" id="reset">重置演示</button></div>
+</div></main>
+<div class="mask" id="mask"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="title"><div class="medal">✓</div><button class="close" aria-label="关闭">×</button><h2 id="title">签到成功</h2><div class="reward-title">连续签到 7 天，奖励已发放</div><div class="rewards"><div class="reward"><small>今日签到奖励</small><strong>现金券5元</strong></div><div class="reward"><small>7天加赠奖励</small><strong>存送券8元</strong></div></div><button class="accept">开心收下</button></div></div>
+<div class="toast" id="toast">请先完成任意一项今日任务</div>
+<script>
+  const today=document.querySelector('#today'), text=document.querySelector('#todayText'), mask=document.querySelector('#mask'), count=document.querySelector('#count'), toast=document.querySelector('#toast');
+  let signed=false, eligible=true;
+  function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}
+  function sign(){if(signed){showToast('今日已完成签到');return}if(!eligible){showToast('请先完成任意一项今日任务');return}signed=true;mask.classList.add('show');count.textContent='7';today.classList.remove('ready');today.classList.add('done');today.querySelector('.icon').textContent='✓';text.textContent='已签到'}
+  today.addEventListener('click',sign);today.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')sign()});
+  document.querySelectorAll('.complete').forEach(btn=>btn.addEventListener('click',()=>{const task=btn.closest('.task');task.querySelector('.bar i').style.setProperty('--p','100%');const state=task.querySelector('.state');state.textContent='已完成';state.classList.add('ok');btn.textContent='已完成';btn.disabled=true;eligible=true;today.classList.add('ready');text.textContent='可签到';showToast('任务已完成，请点击今日礼盒签到')}));
+  document.querySelectorAll('.close,.accept').forEach(btn=>btn.addEventListener('click',()=>mask.classList.remove('show')));
+  document.querySelector('#reset').addEventListener('click',()=>location.reload());
+</script>
+</body></html>
